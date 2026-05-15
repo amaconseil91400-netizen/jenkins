@@ -58,23 +58,20 @@ spec:
             }
         }
 
-        stage('4. Push vers Harbor') {
-            steps {
-                container('docker') {
-                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
-                                                     passwordVariable: 'HARBOR_PWD',
-                                                     usernameVariable: 'HARBOR_USER')]) {
-                        sh """
-                        # Connexion en spécifiant que ce registry est HTTP (insecure)
-                        echo "${HARBOR_PWD}" | docker login ${HARBOR_URL} -u ${HARBOR_USER} --password-stdin
-                        docker push ${FULL_IMAGE_PATH}
-                        """
-                    }
-                }
+stage('4. Push vers Harbor') {
+    steps {
+        container('docker') {
+            withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                                             passwordVariable: 'HARBOR_PWD',
+                                             usernameVariable: 'HARBOR_USER')]) {
+                sh """
+                echo "${HARBOR_PWD}" | docker login my-harbor-core.harbor.svc.cluster.local:80 -u ${HARBOR_USER} --password-stdin
+                docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
+                """
             }
         }
     }
-
+}
     post {
         success {
             echo "✅ Succès : L'image ${FULL_IMAGE_PATH} est sur Harbor !"
