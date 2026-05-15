@@ -26,12 +26,9 @@ spec:
     }
 
     environment {
-        // --- CONFIGURATION CORRIGÉE (Ajout du port 80) ---
         HARBOR_URL      = "my-harbor-core.harbor.svc.cluster.local:80"
         HARBOR_PROJECT  = "harbor"
         IMAGE_NAME      = "mon-app"
-        // --------------------------------
-
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
         FULL_IMAGE_PATH = "${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
@@ -58,20 +55,22 @@ spec:
             }
         }
 
-stage('4. Push vers Harbor') {
-    steps {
-        container('docker') {
-            withCredentials([usernamePassword(credentialsId: 'harbor-creds',
-                                             passwordVariable: 'HARBOR_PWD',
-                                             usernameVariable: 'HARBOR_USER')]) {
-                sh """
-                echo "${HARBOR_PWD}" | docker login my-harbor-core.harbor.svc.cluster.local:80 -u ${HARBOR_USER} --password-stdin
-                docker push ${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}
-                """
+        stage('4. Push vers Harbor') {
+            steps {
+                container('docker') {
+                    withCredentials([usernamePassword(credentialsId: 'harbor-creds',
+                                                     passwordVariable: 'HARBOR_PWD',
+                                                     usernameVariable: 'HARBOR_USER')]) {
+                        sh """
+                        echo "${HARBOR_PWD}" | docker login ${HARBOR_URL} -u ${HARBOR_USER} --password-stdin
+                        docker push ${FULL_IMAGE_PATH}
+                        """
+                    }
+                }
             }
         }
     }
-}
+
     post {
         success {
             echo "✅ Succès : L'image ${FULL_IMAGE_PATH} est sur Harbor !"
@@ -85,4 +84,4 @@ stage('4. Push vers Harbor') {
             }
         }
     }
-} // Fin du pipeline
+}
