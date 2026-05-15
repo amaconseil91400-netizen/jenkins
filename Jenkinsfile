@@ -26,7 +26,7 @@ spec:
     }
 
     environment {
-        HARBOR_URL      = "my-harbor-core.harbor.svc.cluster.local:80"
+        HARBOR_URL      = "10.43.108.59:80"
         HARBOR_PROJECT  = "harbor"
         IMAGE_NAME      = "mon-app"
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
