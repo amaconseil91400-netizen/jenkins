@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         // --- CONFIGURATION À MODIFIER ---
-        HARBOR_URL     = "votre-url-harbor.com"
-        HARBOR_PROJECT = "mon-projet"
+        HARBOR_URL     = "core.harbor.domain.com"
+        HARBOR_PROJECT = "harbor"
         IMAGE_NAME     = "mon-app"
         // --------------------------------
         
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 // Jenkins clone votre dépôt GitHub
                 git credentialsId: 'github-creds', 
-                    url: 'https://github.com/VOTRE_NOM/VOTRE_REPO.git',
+                    url: 'https://github.com/amaconseil91400-netizen/jenkinsgit',
                     branch: 'main'
             }
         }
