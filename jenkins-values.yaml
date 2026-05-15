@@ -1,0 +1,14 @@
+controller:
+  componentName: "jenkins-controller"
+  admin:
+    username: "admin"
+    password: "Password123"
+  serviceType: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    hostName: jenkins.local
+persistence:
+  size: "5Gi"
