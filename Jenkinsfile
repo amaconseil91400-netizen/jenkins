@@ -44,15 +44,13 @@ spec:
             }
         }
 
-        stage('2. Build de l\'image') {
+stage('2. Build de l\'image') {
             steps {
-                script {
-                    // Construction de l'image Docker
+                container('docker') { // On force l'utilisation du conteneur avec Docker
                     sh "docker build -t ${FULL_IMAGE_PATH} ."
                 }
             }
         }
-
         stage('3. Scan de sécurité (Trivy)') {
             steps {
                 script {
