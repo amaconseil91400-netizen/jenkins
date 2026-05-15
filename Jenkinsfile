@@ -4,6 +4,9 @@ pipeline {
             yaml """
 apiVersion: v1
 kind: Pod
+metadata:
+  labels:
+    jenkins: slave
 spec:
   containers:
   - name: docker
@@ -23,19 +26,17 @@ spec:
     }
 
     environment {
-        // --- CONFIGURATION À MODIFIER ---
-        HARBOR_URL      = "my-harbor-core.harbor.svc.cluster.local"
+        // --- CONFIGURATION CORRIGÉE (Ajout du port 80) ---
+        HARBOR_URL      = "my-harbor-core.harbor.svc.cluster.local:80"
         HARBOR_PROJECT  = "harbor"
         IMAGE_NAME      = "mon-app"
         // --------------------------------
-        
+
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
         FULL_IMAGE_PATH = "${HARBOR_URL}/${HARBOR_PROJECT}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
     stages {
-        // Stage 1 (Checkout) supprimé car Jenkins le fait automatiquement au démarrage
-
         stage('2. Build de l\'image') {
             steps {
                 container('docker') {
@@ -64,7 +65,8 @@ spec:
                                                      passwordVariable: 'HARBOR_PWD',
                                                      usernameVariable: 'HARBOR_USER')]) {
                         sh """
-                        echo ${HARBOR_PWD} | docker login ${HARBOR_URL} -u ${HARBOR_USER} --password-stdin
+                        # Connexion en spécifiant que ce registry est HTTP (insecure)
+                        echo "${HARBOR_PWD}" | docker login ${HARBOR_URL} -u ${HARBOR_USER} --password-stdin
                         docker push ${FULL_IMAGE_PATH}
                         """
                     }
