@@ -24,7 +24,7 @@ spec:
 
     environment {
         // --- CONFIGURATION À MODIFIER ---
-        HARBOR_URL      = "core.harbor.domain.com"
+        HARBOR_URL      = "my-harbor-core.harbor.svc.cluster.local"
         HARBOR_PROJECT  = "harbor"
         IMAGE_NAME      = "mon-app"
         // --------------------------------
