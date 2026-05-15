@@ -17,7 +17,7 @@ pipeline {
             steps {
                 // Jenkins clone votre dépôt GitHub
                 git credentialsId: 'github-creds', 
-                    url: 'https://github.com/amaconseil91400-netizen/jenkinsgit',
+                    url: 'https://github.com/amaconseil91400-netizen/jenkins.git',
                     branch: 'main'
             }
         }
